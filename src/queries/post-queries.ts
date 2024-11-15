@@ -2,14 +2,19 @@ import {IPost} from "../interfaces/post.interface";
 import {HydratedDocument, UpdateWriteOpResult} from "mongoose";
 import {Post} from "../services/mongo-handler";
 
-export const addPost = (post: IPost): void => {
+export const addPost = async (post: IPost): Promise<boolean> => {
     const doc: HydratedDocument<IPost> = new Post(post);
+    const res: HydratedDocument<IPost> = await doc.save();
 
-    doc.save().then(() => {
-        console.log(`post ${post.id} added successfully`);
-    }).catch((error) => {
-        console.error('error occurred while adding post', error);
-    });
+    if (!res) {
+        console.error('error occurred while adding post');
+
+        return false
+    } else {
+        console.log(`post added successfully`);
+
+        return true;
+    }
 }
 
 export const getAllPosts = async (): Promise<HydratedDocument<IPost>[]> => {
@@ -25,7 +30,7 @@ export const getAllPosts = async (): Promise<HydratedDocument<IPost>[]> => {
 }
 
 export const getPostById = async (id: number): Promise<HydratedDocument<IPost>> => {
-    const post: HydratedDocument<IPost> = await Post.findOne({id})
+    const post: HydratedDocument<IPost> = await Post.findOne({id});
 
     if (!post) {
         console.error(`didnt find post ${id}`);
