@@ -1,5 +1,7 @@
+import {connectToDB} from "./services/mongo-handler";
+
 require('dotenv').config()
-import express, {Express} from 'express';
+import express, {Express, Router} from 'express';
 import cors from 'cors';
 
 const app: Express = express();
@@ -15,3 +17,7 @@ const runApp = (app: Express) => {
 }
 
 runApp(app);
+connectToDB();
+
+const router: Router = express.Router();
+module.exports = router;
