@@ -53,15 +53,16 @@ export const getPostsBySender = async (senderId: number): Promise<HydratedDocume
     }
 }
 
-export const updatePost = async (id: number, content: string): Promise<void> => {
-    Post.updateOne({id}, {content})
-        .then((result: UpdateWriteOpResult) => {
-        if (result.modifiedCount > 0) {
-            console.log(`post ${id} content updated successfully`);
-        } else {
-            console.log('post not found or content up to date');
-        }
-    }).catch(error => {
-        console.error('Error updating post:', error);
-    });
+export const updatePost = async (id: number, content: string): Promise<boolean> => {
+    const result: UpdateWriteOpResult = await Post.updateOne({id}, {content});
+
+    if (result.modifiedCount > 0) {
+        console.log(`post ${id} content updated successfully`);
+
+        return true;
+    } else {
+        console.log('post not found or content up to date');
+
+        return false;
+    }
 }
