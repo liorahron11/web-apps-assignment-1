@@ -10,14 +10,20 @@ Content-Type: application/json
 
 {
 "post": {
-    "id": 9999,
-    "senderId": 8,
+    "id": 6488,
+    "senderId": 155,
     "content": "hello world",
     "comments": [{
         "id": 1,
         "senderId": 8,
         "content": "comment"
-        }]
+        },
+        {
+        "id": 2,
+        "senderId": 9,
+        "content": "comment 2"
+        }
+        ]
     }
 }
 
@@ -27,14 +33,48 @@ GET {{BASE_URL}}/post/2
 
 ### 
 # get posts by userID  
-GET {{BASE_URL}}/post?sender=2
+GET {{BASE_URL}}/post?sender=15
 
 ###
 # change content for given postID 
-Put {{BASE_URL}}/post/9999 
+Put {{BASE_URL}}/post/12345 
 Content-Type: application/json
 
 {
-"content": "new content cool!"
+"content": "new content cool!!!"
 }
 
+###
+
+GET {{BASE_URL}}/post/123456/comments
+
+
+### Create a Comment
+Post {{BASE_URL}}/post/123456/comment
+Content-Type: application/json
+
+{
+ "comment": {
+    "id": 555599,
+    "senderId": 10025,
+    "content": "This is a comment on the post!!"
+    }
+}
+
+### Update a Comment
+Put {{BASE_URL}}/post/6488/comment
+Content-Type: application/json
+
+{
+ "commentId": 2,
+ "content": "new content- after update the comment"
+}
+
+### find specific comment id in post id
+GET {{BASE_URL}}/post/comment
+Content-Type: application/json
+
+{
+ "postId": 2,
+ "commentId": 2
+}
