@@ -134,8 +134,6 @@ export const deleteCommentInPost = async (postId: number, commentId: number): Pr
     }
 }
 
-
-
 export const getSpecificCommentInPost = async (postId: number, commentId: number): Promise<IComment> => {
     const post: HydratedDocument<IPost> = await getPostById(postId);
     
