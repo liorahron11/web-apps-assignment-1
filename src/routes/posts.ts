@@ -1,5 +1,5 @@
 import express, {Router} from "express";
-import {addPost, getAllPosts, getPostById, getPostsBySender, updatePost} from "../queries/post-queries";
+import {addPost, getAllPosts, getPostById, getPostsBySender, updatePost, getPostCommentsById, addCommentToPostId, updateCommentInPost, getSpecificCommentInPost,deleteCommentInPost} from "../queries/post-queries";
 import {HydratedDocument} from "mongoose";
 import {IPost} from "../interfaces/post.interface";
 const postsRoutes: Router = express.Router();
