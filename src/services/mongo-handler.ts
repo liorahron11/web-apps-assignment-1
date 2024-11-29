@@ -2,10 +2,12 @@ import mongoose, {model, Model, Schema} from 'mongoose';
 import {ConnectOptions} from "mongoose";
 import {IPost} from "../interfaces/post.interface";
 import {IComment} from "../interfaces/comment.interface";
+import {IUser} from "../interfaces/user.interface";
 export type PostModel = Model<IPost>;
 export type CommentModel = Model<IComment>;
+export type UserModel = Model<IUser>;
 export let Post: PostModel;
-export let Comment: CommentModel;
+export let User: UserModel;
 
 export const connectToDB = () => {
     const mongoUrl: string = process.env.MONGO_URL;
@@ -16,6 +18,7 @@ export const connectToDB = () => {
     mongoose.connect(mongoUrl, mongoOptions).then(() => {
         setEventsHandler();
         Post = initPostModel();
+        User = initUserModel();
 
         console.log('mongo connection initialized');
     }).catch((error) => {
@@ -44,4 +47,15 @@ const initPostModel = () => {
     });
 
     return model<IPost, PostModel>('Post', postSchema);
+};
+
+const initUserModel = () => {
+    const userSchema: Schema<IUser, UserModel> = new Schema<IUser, UserModel>({
+        id: {type: 'Number', required: true, unique: true},
+        username: {type: 'String', required: true, unique: true},
+        email: {type: 'String', required: true, unique: true},
+        password: {type: 'String', required: true},
+    });
+
+    return model<IUser, UserModel>('User', userSchema);
 };
