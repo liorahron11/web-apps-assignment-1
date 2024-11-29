@@ -2,6 +2,7 @@ import {connectToDB} from "./services/mongo-handler";
 import postsRoutes from './routes/posts';
 import express, {Express} from 'express';
 import cors from 'cors';
+import commentsRoutes from "./routes/comments";
 require('dotenv').config()
 
 const app: Express = express();
@@ -10,6 +11,7 @@ app.use(cors());
 
 const initRoutes = (app: Express) => {
     app.use('/post', postsRoutes);
+    app.use('/comment', commentsRoutes);
 };
 
 const runApp = (app: Express) => {
