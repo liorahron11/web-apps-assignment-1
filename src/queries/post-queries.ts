@@ -70,7 +70,7 @@ export const updatePost = async (id: number, content: string): Promise<boolean> 
 
 
 export const getPostCommentsById = async (id: number): Promise<IComment[]> => {
-    const post: HydratedDocument<IPost> = await Post.findOne({id});
+    const post: HydratedDocument<IPost> = await getPostById(id);
 
     if (!post) {
         console.error(`didnt find post ${id}`);
@@ -82,7 +82,7 @@ export const getPostCommentsById = async (id: number): Promise<IComment[]> => {
 }
 
 export const addCommentToPostId = async (id: number, comment: IComment): Promise<IComment[]> => {
-    const post: HydratedDocument<IPost> = await Post.findOne({id});
+    const post: HydratedDocument<IPost> = await getPostById(id);
 
     if (!post) {
         console.error(`didnt find post ${id}`);
@@ -99,7 +99,7 @@ export const addCommentToPostId = async (id: number, comment: IComment): Promise
 }
 
 export const updateCommentInPost = async (postId: number, commentId: number ,newContent: string): Promise<boolean> => {
-    const post: HydratedDocument<IPost> = await Post.findOne({postId});
+    const post: HydratedDocument<IPost> = await getPostById(postId);;
 
     if (!post) {
         console.error(`didnt find post ${postId}`);
@@ -137,13 +137,13 @@ export const deleteCommentInPost = async (postId: number, commentId: number): Pr
 
 
 export const getSpecificCommentInPost = async (postId: number, commentId: number): Promise<IComment> => {
-    const post: HydratedDocument<IPost> = await Post.findOne({postId});
+    const post: HydratedDocument<IPost> = await getPostById(postId);
     
     if (!post) {
         console.error(`didnt find post ${postId}`);
     } else {
         console.log(`post ${postId} found successfully`);
-        const comment = post.comments.find(c => c.id === commentId);
+        const comment: IComment = post.comments.find((currComment: IComment) => currComment.id === commentId);
 
         if(comment) {
             console.log(`comment ${postId} found successfully`);
