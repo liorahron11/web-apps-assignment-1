@@ -1,3 +1,6 @@
+// Lior Aharon 212211684
+// Shalev Lavyoud 322930561
+
 import {connectToDB} from "./services/mongo-handler";
 import postsRoutes from './routes/posts';
 import express, {Express} from 'express';
