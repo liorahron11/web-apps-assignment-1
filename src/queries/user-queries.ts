@@ -1,5 +1,5 @@
 import {IUser} from "../interfaces/user.interface";
-import {DeleteResult, HydratedDocument} from "mongoose";
+import {DeleteResult, HydratedDocument, UpdateWriteOpResult} from "mongoose";
 import {Post, User} from "../services/mongo-handler";
 import {IPost} from "../interfaces/post.interface";
 
@@ -63,5 +63,47 @@ export const deleteUser = async (userId: number): Promise<boolean> => {
     } else {
         console.info(`removed user ${userId}`);
         return true;
+    }
+}
+
+export const updateUserPassword = async (id: number, password: string): Promise<boolean> => {
+    const result: UpdateWriteOpResult = await User.updateOne({id}, {password});
+
+    if (result.modifiedCount > 0) {
+        console.log(`user ${id} password updated successfully`);
+
+        return true;
+    } else {
+        console.log('user not found or password up to date');
+
+        return false;
+    }
+}
+
+export const updateUserUsername = async (id: number, username: string): Promise<boolean> => {
+    const result: UpdateWriteOpResult = await User.updateOne({id}, {username});
+
+    if (result.modifiedCount > 0) {
+        console.log(`user ${id} username updated successfully`);
+
+        return true;
+    } else {
+        console.log('user not found or username up to date');
+
+        return false;
+    }
+}
+
+export const updateUserEmail = async (id: number, email: string): Promise<boolean> => {
+    const result: UpdateWriteOpResult = await User.updateOne({id}, {email});
+
+    if (result.modifiedCount > 0) {
+        console.log(`user ${id} email updated successfully`);
+
+        return true;
+    } else {
+        console.log('user not found or email up to date');
+
+        return false;
     }
 }
