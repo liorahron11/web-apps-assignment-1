@@ -72,21 +72,21 @@ usersRoutes.put('/:id', async (req, res) => {
     let moreInfo: string = "";
     const userId: number = Number(req.params.id);
 
-    const password: string = req.body.user.password.toString();
+    const password: string = req.body.password?.toString();
     if (password && isStrongPassword(password)) {
         isPasswordUpdated = await updateUserPassword(userId, password);
     } else {
         moreInfo += "password is missing or not strong enough. ";
     }
 
-    const username: string = req.body.user.username.toString();
+    const username: string = req.body.username?.toString();
     if (username) {
-        isUsernameUpdated = await updateUserUsername(userId, password);
+        isUsernameUpdated = await updateUserUsername(userId, username);
     } else {
         moreInfo += "username is missing. ";
     }
 
-    const email: string = req.body.user.email.toString();
+    const email: string = req.body.email?.toString();
     if (email && isEmail(email)) {
         isEmailUpdated = await updateUserEmail(userId, email);
     } else {
