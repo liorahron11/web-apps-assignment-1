@@ -1,6 +1,6 @@
 import {IPost} from "../interfaces/post.interface";
 import {HydratedDocument, UpdateWriteOpResult} from "mongoose";
-import {Post} from "../services/mongo-handler";
+import Post from "../models/post.model";
 import { IComment } from "../interfaces/comment.interface";
 
 export const addPost = async (post: IPost): Promise<boolean> => {

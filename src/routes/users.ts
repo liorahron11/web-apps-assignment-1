@@ -1,22 +1,16 @@
 import express, {Router} from "express";
 import {HydratedDocument} from "mongoose";
 import {IUser} from "../interfaces/user.interface";
-import {
-    addUser,
-    deleteUser,
-    getAllUsers,
-    getUserById, updateUserEmail,
-    updateUserPassword,
-    updateUserUsername
-} from "../queries/user-queries";
+import {UserQueriesService} from "../queries/user-queries";
 import {isUserValid} from "../services/validation-service";
 import isStrongPassword from "validator/lib/isStrongPassword";
 import isEmail from "validator/lib/isEmail";
 import {stringifyUpdatedUserFields} from "../services/query-utils";
 const usersRoutes: Router = express.Router();
+const userQueryService: UserQueriesService = new UserQueriesService();
 
 usersRoutes.get('/all', async (req, res) => {
-    const posts: HydratedDocument<IUser>[] = await getAllUsers();
+    const posts: HydratedDocument<IUser>[] = await userQueryService.getAllUsers();
 
     if (posts) {
         res.status(200).send(posts);
@@ -30,12 +24,12 @@ usersRoutes.post('/', async (req, res) => {
 
     try {
         if (isUserValid(user)) {
-            const isUserAdded: boolean = await addUser(user);
+            const isUserAdded: boolean = await userQueryService.addUser(user);
 
             if (isUserAdded) {
-                res.status(200).send('user added');
+                res.status(201).send('user created');
             } else {
-                res.status(500).send('error adding user');
+                res.status(500).send('error creating user');
             }
         } else {
             res.status(500).send('user is missing');
@@ -47,7 +41,7 @@ usersRoutes.post('/', async (req, res) => {
 
 usersRoutes.get('/:id', async (req, res) => {
     const userId: number = Number(req.params.id);
-    const user: HydratedDocument<IUser> = await getUserById(userId);
+    const user: HydratedDocument<IUser> = await userQueryService.getUserById(userId);
 
     if (user) {
         res.status(200).send(user);
@@ -58,10 +52,10 @@ usersRoutes.get('/:id', async (req, res) => {
 
 usersRoutes.delete('/:id', async (req, res) => {
     const userId: number = Number(req.params.id);
-    const isDeleteSuccess: boolean = await deleteUser(userId);
+    const isDeleteSuccess: boolean = await userQueryService.deleteUser(userId);
 
     if (isDeleteSuccess){
-        return res.status(200).send("user deleted");
+        return res.status(200).send("user deleted successfully");
     } else {
         return res.status(500).send("error while deleting user");
     }
@@ -74,27 +68,27 @@ usersRoutes.put('/:id', async (req, res) => {
 
     const password: string = req.body.password?.toString();
     if (password && isStrongPassword(password)) {
-        isPasswordUpdated = await updateUserPassword(userId, password);
+        isPasswordUpdated = await userQueryService.updateUserPassword(userId, password);
     } else {
         moreInfo += "password is missing or not strong enough. ";
     }
 
     const username: string = req.body.username?.toString();
     if (username) {
-        isUsernameUpdated = await updateUserUsername(userId, username);
+        isUsernameUpdated = await userQueryService.updateUserUsername(userId, username);
     } else {
         moreInfo += "username is missing. ";
     }
 
     const email: string = req.body.email?.toString();
     if (email && isEmail(email)) {
-        isEmailUpdated = await updateUserEmail(userId, email);
+        isEmailUpdated = await userQueryService.updateUserEmail(userId, email);
     } else {
         moreInfo += "email is missing or not valid. ";
     }
 
     if (isPasswordUpdated || isUsernameUpdated || isEmailUpdated){
-        return res.status(200).send(`${stringifyUpdatedUserFields(isPasswordUpdated, isUsernameUpdated, isEmailUpdated)} updated. ${moreInfo}`);
+        return res.status(200).send(`${stringifyUpdatedUserFields(isPasswordUpdated, isUsernameUpdated, isEmailUpdated)} updated successfully. ${moreInfo}`);
     } else {
         res.status(500).send(`user not found or content up to date. ${moreInfo}`);
     }

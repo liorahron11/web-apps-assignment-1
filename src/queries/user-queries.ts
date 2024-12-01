@@ -1,109 +1,110 @@
 import {IUser} from "../interfaces/user.interface";
 import {DeleteResult, HydratedDocument, UpdateWriteOpResult} from "mongoose";
-import {Post, User} from "../services/mongo-handler";
-import {IPost} from "../interfaces/post.interface";
+import User from "../models/user.model";
 
-export const getAllUsers = async (): Promise<HydratedDocument<IUser>[]> => {
-    const posts: HydratedDocument<IUser>[] = await User.find()
+export class UserQueriesService {
+    public getAllUsers = async (): Promise<HydratedDocument<IUser>[]> => {
+        const posts: HydratedDocument<IUser>[] = await User.find()
 
-    if (!posts) {
-        console.error(`could not find users`);
-    } else {
-        console.log(`users found successfully`);
+        if (!posts) {
+            console.error(`could not find users`);
+        } else {
+            console.log(`users found successfully`);
 
-        return posts;
+            return posts;
+        }
     }
-}
 
-export const addUser = async (user: IUser): Promise<boolean> => {
-    const doc: HydratedDocument<IUser> = new User(user);
-    const res: HydratedDocument<IUser> = await doc.save();
+    public addUser = async (user: IUser): Promise<boolean> => {
+        const doc: HydratedDocument<IUser> = new User(user);
+        const res: HydratedDocument<IUser> = await doc.save();
 
-    if (!res) {
-        console.error('error occurred while adding user');
+        if (!res) {
+            console.error('error occurred while adding user');
 
-        return false
-    } else {
-        console.log(`user added successfully`);
+            return false
+        } else {
+            console.log(`user added successfully`);
 
-        return true;
+            return true;
+        }
     }
-}
 
-export const getUserById = async (id: number): Promise<HydratedDocument<IUser>> => {
-    const user: HydratedDocument<IUser> = await User.findOne({id});
+    public getUserById = async (id: number): Promise<HydratedDocument<IUser>> => {
+        const user: HydratedDocument<IUser> = await User.findOne({id});
 
-    if (!user) {
-        console.error(`could not find user`);
-    } else {
-        console.log(`user found successfully`);
+        if (!user) {
+            console.error(`could not find user`);
+        } else {
+            console.log(`user found successfully`);
 
-        return user;
+            return user;
+        }
     }
-}
 
-export const getUserByUsernameAndPassword = async (username: string, password: string): Promise<HydratedDocument<IUser>> => {
-    const user: HydratedDocument<IUser> = await User.findOne({username, password});
+    public getUserByUsernameAndPassword = async (username: string, password: string): Promise<HydratedDocument<IUser>> => {
+        const user: HydratedDocument<IUser> = await User.findOne({username, password});
 
-    if (!user) {
-        console.error(`could not find user`);
-    } else {
-        console.log(`user found successfully`);
+        if (!user) {
+            console.error(`could not find user`);
+        } else {
+            console.log(`user found successfully`);
 
-        return user;
+            return user;
+        }
     }
-}
 
-export const deleteUser = async (userId: number): Promise<boolean> => {
-    const deleteResult: DeleteResult = await User.deleteOne({id: userId});
+    public deleteUser = async (userId: number): Promise<boolean> => {
+        const deleteResult: DeleteResult = await User.deleteOne({id: userId});
 
-    if (!deleteResult) {
-        console.error(`didnt find user ${userId}`);
-        return false;
-    } else {
-        console.info(`removed user ${userId}`);
-        return true;
+        if (!deleteResult) {
+            console.error(`didnt find user ${userId}`);
+            return false;
+        } else {
+            console.info(`removed user ${userId}`);
+            return true;
+        }
     }
-}
 
-export const updateUserPassword = async (id: number, password: string): Promise<boolean> => {
-    const result: UpdateWriteOpResult = await User.updateOne({id}, {password});
+    public updateUserPassword = async (id: number, password: string): Promise<boolean> => {
+        const result: UpdateWriteOpResult = await User.updateOne({id}, {password});
 
-    if (result.modifiedCount > 0) {
-        console.log(`user ${id} password updated successfully`);
+        if (result.modifiedCount > 0) {
+            console.log(`user ${id} password updated successfully`);
 
-        return true;
-    } else {
-        console.log('user not found or password up to date');
+            return true;
+        } else {
+            console.log('user not found or password up to date');
 
-        return false;
+            return false;
+        }
     }
-}
 
-export const updateUserUsername = async (id: number, username: string): Promise<boolean> => {
-    const result: UpdateWriteOpResult = await User.updateOne({id}, {username});
+    public updateUserUsername = async (id: number, username: string): Promise<boolean> => {
+        const result: UpdateWriteOpResult = await User.updateOne({id}, {username});
 
-    if (result.modifiedCount > 0) {
-        console.log(`user ${id} username updated successfully`);
+        if (result.modifiedCount > 0) {
+            console.log(`user ${id} username updated successfully`);
 
-        return true;
-    } else {
-        console.log('user not found or username up to date');
+            return true;
+        } else {
+            console.log('user not found or username up to date');
 
-        return false;
+            return false;
+        }
     }
-}
 
-export const updateUserEmail = async (id: number, email: string): Promise<boolean> => {
-    const result: UpdateWriteOpResult = await User.updateOne({id}, {email});
+    public updateUserEmail = async (id: number, email: string): Promise<boolean> => {
+        const result: UpdateWriteOpResult = await User.updateOne({id}, {email});
 
-    if (result.modifiedCount > 0) {
-        console.log(`user ${id} email updated successfully`);
+        if (result.modifiedCount > 0) {
+            console.log(`user ${id} email updated successfully`);
 
-        return true;
-    } else {
-        console.log('user not found or email up to date');
+            return true;
+        } else {
+            console.log('user not found or email up to date');
 
-        return false;
+            return false;
+        }
     }
 }

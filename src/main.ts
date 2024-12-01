@@ -21,11 +21,13 @@ const initRoutes = (app: Express) => {
 const runApp = (app: Express) => {
     const port: number = Number(process.env.port);
 
-    app.listen(port, () => {
+    return app.listen(port, () => {
         return console.log(`app is running at port ${port}`);
     });
 }
 
 connectToDB();
 initRoutes(app);
-runApp(app);
+const server = runApp(app);
+
+export default server;
