@@ -1,7 +1,7 @@
 import request from 'supertest';
-import app from '../main';
 import PostModel from "../models/post.model";
 import {IPost} from "../interfaces/post.interface";
+import server from "../main";
 const postMock: IPost = {
     "id": 999,
     "senderId": 155,
@@ -14,13 +14,13 @@ afterEach(async () => {
 });
 
 afterAll(async () => {
-    app.close();
+    server.close();
 });
 
 describe('Posts API', () => {
     describe('GET /post', () => {
         it('should return a list of users', async () => {
-            const res = await request(app).get('/post/all');
+            const res = await request(server).get('/post/all');
             expect(res.status).toBe(200);
             expect(res.body).toBeInstanceOf(Array);
         });
@@ -28,7 +28,7 @@ describe('Posts API', () => {
         it('should return a post with id 999', async () => {
             await PostModel.create(postMock);
 
-            const res = await request(app).get('/post/999');
+            const res = await request(server).get('/post/999');
             expect(res.status).toBe(200);
             expect(res.body).toMatchObject(postMock);
         });
@@ -36,7 +36,7 @@ describe('Posts API', () => {
         it('should return a post with senderID 999', async () => {
             await PostModel.create(postMock);
 
-            const res = await request(app).get('/post?sender=155');
+            const res = await request(server).get('/post?sender=155');
             expect(res.status).toBe(200);
 
             const posts: IPost[] = res.body.map((post: IPost) => {
@@ -49,7 +49,7 @@ describe('Posts API', () => {
 
     describe('POST /post', () => {
         it('should create a new post', async () => {
-            const res = await request(app).post('/post')
+            const res = await request(server).post('/post')
                 .send({post: postMock})
                 .set('Content-Type', 'application/json')
                 .set('Accept', 'application/json');
@@ -69,7 +69,7 @@ describe('Posts API', () => {
 
             const newPostFields: Partial<IPost> = { content: 'new post content' };
 
-            const res = await request(app).put('/post/999')
+            const res = await request(server).put('/post/999')
                 .send(newPostFields)
                 .set('Content-Type', 'application/json')
                 .set('Accept', 'application/json');

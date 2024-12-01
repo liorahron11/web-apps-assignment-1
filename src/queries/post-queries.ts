@@ -19,7 +19,7 @@ export const addPost = async (post: IPost): Promise<boolean> => {
 }
 
 export const getAllPosts = async (): Promise<HydratedDocument<IPost>[]> => {
-    const posts: HydratedDocument<IPost>[] = await Post.find()
+    const posts: HydratedDocument<IPost>[] = await Post.find();
 
     if (!posts) {
         console.error(`could not find posts}`);
