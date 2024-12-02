@@ -1,5 +1,5 @@
 import express, {Router} from "express";
-import {addPost, getAllPosts, getPostById, getPostsBySender, updatePost, getPostCommentsById, addCommentToPostId, updateCommentInPost, getSpecificCommentInPost,deleteCommentInPost} from "../queries/post-queries";
+import {addPost, getAllPosts, getPostById, getPostsBySender, updatePost} from "../queries/post-queries";
 import {HydratedDocument} from "mongoose";
 import {IPost} from "../interfaces/post.interface";
 const postsRoutes: Router = express.Router();
@@ -11,7 +11,7 @@ postsRoutes.post('/', async (req, res) => {
         const isPostAdded: boolean = await addPost(post);
 
         if (isPostAdded) {
-            res.status(200).send('post added');
+            res.status(201).send('post added successfully');
         } else {
             res.status(500).send('error adding post');
         }
@@ -70,7 +70,7 @@ postsRoutes.put('/:id', async (req, res) => {
         const isPostUpdated: boolean = await updatePost(postId ,newContent);
 
         if (isPostUpdated) {
-            res.status(200).send('post updated');
+            res.status(200).send('post updated successfully');
         } else {
             res.status(500).send('error updating the post');
         }
