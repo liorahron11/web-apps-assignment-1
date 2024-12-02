@@ -65,6 +65,24 @@ describe('User API', () => {
             expect(userInDb?.email).toBe(newUserFields.email);
             expect(userInDb?.password).toBe(newUserFields.password);
         });
+
+        it('should update user username', async () => {
+            await UserModel.create({ username: 'Jane Doe', email: 'jane@example.com', password: 'Jane1234!', id: 999 });
+
+            const newUserFields: Partial<IUser> = { username: 'testing is fun' };
+
+            const res = await request(server).put('/user/999')
+                .send(newUserFields)
+                .set('Content-Type', 'application/json')
+                .set('Accept', 'application/json');
+
+            expect(res.status).toBe(200);
+            expect(res.text).toContain('updated successfully');
+
+            const userInDb = await UserModel.findOne({ id: 999 });
+            expect(userInDb).not.toBeNull();
+            expect(userInDb?.username).toBe(newUserFields.username);
+        });
     });
 
     describe('DELETE /user', () => {

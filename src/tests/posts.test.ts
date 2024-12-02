@@ -57,9 +57,9 @@ describe('Posts API', () => {
             expect(res.status).toBe(201);
             expect(res.text).toBe('post added successfully');
 
-            const userInDb = await PostModel.findOne({ id: 999 });
-            expect(userInDb).not.toBeNull();
-            expect(userInDb?.content).toBe('testing post');
+            const postInDb = await PostModel.findOne({ id: 999 });
+            expect(postInDb).not.toBeNull();
+            expect(postInDb?.content).toBe('testing post');
         });
     });
 
@@ -77,9 +77,9 @@ describe('Posts API', () => {
             expect(res.status).toBe(200);
             expect(res.text).toContain('updated successfully');
 
-            const userInDb = await PostModel.findOne({ id: 999 });
-            expect(userInDb).not.toBeNull();
-            expect(userInDb?.content).toBe(newPostFields.content);
+            const postInDb = await PostModel.findOne({ id: 999 });
+            expect(postInDb).not.toBeNull();
+            expect(postInDb?.content).toBe(newPostFields.content);
         });
     });
 });
