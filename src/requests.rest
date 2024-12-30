@@ -68,8 +68,39 @@ Content-Type: application/json
 GET {{BASE_URL}}/comment/1234/1
 Content-Type: application/json
 
-
-
 ### delete a comment from post
 DELETE {{BASE_URL}}/comment/6488/3
 Content-Type: application/json
+
+### USERS API
+
+### get all users
+GET {{BASE_URL}}/user/all
+
+### get user by userID
+GET {{BASE_URL}}/user/1
+
+### add new user
+POST {{BASE_URL}}/user HTTP/1.1
+Content-Type: application/json
+
+{
+"user": {
+    "id": 10025,
+    "username": "israel-israeli",
+    "email": "israel@gmail.com",
+    "password": "Israel123!!!"
+    }
+}
+
+### delete user by userID
+DELETE {{BASE_URL}}/user/10025
+
+### update user by userID
+PUT {{BASE_URL}}/user/1 HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "new-username",
+  "password": "NewPassword123!!!"
+}

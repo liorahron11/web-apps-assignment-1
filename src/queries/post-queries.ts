@@ -1,6 +1,6 @@
 import {IPost} from "../interfaces/post.interface";
 import {HydratedDocument, UpdateWriteOpResult} from "mongoose";
-import {Post} from "../services/mongo-handler";
+import Post from "../models/post.model";
 import { IComment } from "../interfaces/comment.interface";
 
 export const addPost = async (post: IPost): Promise<boolean> => {
@@ -19,7 +19,7 @@ export const addPost = async (post: IPost): Promise<boolean> => {
 }
 
 export const getAllPosts = async (): Promise<HydratedDocument<IPost>[]> => {
-    const posts: HydratedDocument<IPost>[] = await Post.find()
+    const posts: HydratedDocument<IPost>[] = await Post.find();
 
     if (!posts) {
         console.error(`could not find posts}`);
@@ -99,7 +99,7 @@ export const addCommentToPostId = async (id: number, comment: IComment): Promise
 }
 
 export const updateCommentInPost = async (postId: number, commentId: number ,newContent: string): Promise<boolean> => {
-    const post: HydratedDocument<IPost> = await getPostById(postId);;
+    const post: HydratedDocument<IPost> = await getPostById(postId);
 
     if (!post) {
         console.error(`didnt find post ${postId}`);
@@ -109,7 +109,8 @@ export const updateCommentInPost = async (postId: number, commentId: number ,new
 
         if(comment){
             comment.content = newContent;
-            post.save;
+            await post.save();
+
             return true;
         } 
         console.error(`didnt find comment ${commentId} for post ${postId}`);
@@ -129,12 +130,10 @@ export const deleteCommentInPost = async (postId: number, commentId: number): Pr
         return false;
     } else {
         
-        console.error(`remove comment ${commentId} in post ${postId}`);
+        console.log(`remove comment ${commentId} in post ${postId}`);
         return true;
     }
 }
-
-
 
 export const getSpecificCommentInPost = async (postId: number, commentId: number): Promise<IComment> => {
     const post: HydratedDocument<IPost> = await getPostById(postId);

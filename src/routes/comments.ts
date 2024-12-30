@@ -36,7 +36,7 @@ commentsRoutes.post('/:postId', async (req, res) => {
 
         const postComments: IComment[] = await addCommentToPostId(postId, newComment);
         if (postComments) {
-            res.status(200).send("add comment")
+            res.status(201).send("comment added successfully");
         } else {
             res.status(500).send('error adding a comment to the post');
         }
@@ -55,7 +55,7 @@ commentsRoutes.put('/:postId/:commentId', async (req, res) => {
     const isUpdateSuccess: boolean = await updateCommentInPost(postId, commentId, newContent);
 
     if(isUpdateSuccess){
-        return res.status(200).send("update comment");
+        return res.status(200).send("comment updated successfully");
     } else {
         return res.status(500).send("error while update the comment");
     }
@@ -69,9 +69,9 @@ commentsRoutes.delete('/:postId/:commentId', async (req, res) => {
     const isDeleteSuccess: boolean = await deleteCommentInPost(postId, commentId);
 
     if(isDeleteSuccess){
-        return res.status(200).send("comment deleted");
+        return res.status(200).send("comment deleted successfully");
     } else {
-        return res.status(500).send("error while delete the comment");
+        return res.status(500).send("error while deleting comment");
     }
 });
 
