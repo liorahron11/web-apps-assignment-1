@@ -30,8 +30,8 @@ export class UserQueriesService {
         }
     }
 
-    public getUserById = async (id: number): Promise<HydratedDocument<IUser>> => {
-        const user: HydratedDocument<IUser> = await User.findOne({id});
+    public getUserById = async (id: string): Promise<HydratedDocument<IUser>> => {
+        const user: HydratedDocument<IUser> = await User.findOne({_id: id});
 
         if (!user) {
             console.error(`could not find user`);
@@ -42,20 +42,8 @@ export class UserQueriesService {
         }
     }
 
-    public getUserByUsernameAndPassword = async (username: string, password: string): Promise<HydratedDocument<IUser>> => {
-        const user: HydratedDocument<IUser> = await User.findOne({username, password});
-
-        if (!user) {
-            console.error(`could not find user`);
-        } else {
-            console.log(`user found successfully`);
-
-            return user;
-        }
-    }
-
-    public deleteUser = async (userId: number): Promise<boolean> => {
-        const deleteResult: DeleteResult = await User.deleteOne({id: userId});
+    public deleteUser = async (userId: string): Promise<boolean> => {
+        const deleteResult: DeleteResult = await User.deleteOne({_id: userId});
 
         if (!deleteResult) {
             console.error(`didnt find user ${userId}`);
@@ -66,8 +54,8 @@ export class UserQueriesService {
         }
     }
 
-    public updateUserPassword = async (id: number, password: string): Promise<boolean> => {
-        const result: UpdateWriteOpResult = await User.updateOne({id}, {password});
+    public updateUserPassword = async (id: string, password: string): Promise<boolean> => {
+        const result: UpdateWriteOpResult = await User.updateOne({_id: id}, { $set: {password: password}});
 
         if (result.modifiedCount > 0) {
             console.log(`user ${id} password updated successfully`);
@@ -80,22 +68,8 @@ export class UserQueriesService {
         }
     }
 
-    public updateUserUsername = async (id: number, username: string): Promise<boolean> => {
-        const result: UpdateWriteOpResult = await User.updateOne({id}, {username});
-
-        if (result.modifiedCount > 0) {
-            console.log(`user ${id} username updated successfully`);
-
-            return true;
-        } else {
-            console.log('user not found or username up to date');
-
-            return false;
-        }
-    }
-
-    public updateUserEmail = async (id: number, email: string): Promise<boolean> => {
-        const result: UpdateWriteOpResult = await User.updateOne({id}, {email});
+    public updateUserEmail = async (id: string, email: string): Promise<boolean> => {
+        const result: UpdateWriteOpResult = await User.updateOne({_id: id}, { $set: {email: email}});
 
         if (result.modifiedCount > 0) {
             console.log(`user ${id} email updated successfully`);

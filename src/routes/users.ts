@@ -27,7 +27,7 @@ usersRoutes.post('/', async (req, res) => {
             const isUserAdded: boolean = await userQueryService.addUser(user);
 
             if (isUserAdded) {
-                res.status(201).send('user created');
+                res.status(201).send('user created').json();
             } else {
                 res.status(500).send('error creating user');
             }
@@ -40,7 +40,7 @@ usersRoutes.post('/', async (req, res) => {
 });
 
 usersRoutes.get('/:id', async (req, res) => {
-    const userId: number = Number(req.params.id);
+    const userId: string = req.params.id;
     const user: HydratedDocument<IUser> = await userQueryService.getUserById(userId);
 
     if (user) {
@@ -51,7 +51,7 @@ usersRoutes.get('/:id', async (req, res) => {
 });
 
 usersRoutes.delete('/:id', async (req, res) => {
-    const userId: number = Number(req.params.id);
+    const userId: string = req.params.id;
     const isDeleteSuccess: boolean = await userQueryService.deleteUser(userId);
 
     if (isDeleteSuccess){
@@ -64,20 +64,13 @@ usersRoutes.delete('/:id', async (req, res) => {
 usersRoutes.put('/:id', async (req, res) => {
     let {isPasswordUpdated, isUsernameUpdated, isEmailUpdated}: {isPasswordUpdated: boolean, isUsernameUpdated: boolean, isEmailUpdated: boolean} = {isPasswordUpdated: false, isUsernameUpdated: false, isEmailUpdated: false};
     let moreInfo: string = "";
-    const userId: number = Number(req.params.id);
+    const userId: string = req.params.id;
 
     const password: string = req.body.password?.toString();
     if (password && isStrongPassword(password)) {
         isPasswordUpdated = await userQueryService.updateUserPassword(userId, password);
     } else {
         moreInfo += "password is missing or not strong enough. ";
-    }
-
-    const username: string = req.body.username?.toString();
-    if (username) {
-        isUsernameUpdated = await userQueryService.updateUserUsername(userId, username);
-    } else {
-        moreInfo += "username is missing. ";
     }
 
     const email: string = req.body.email?.toString();

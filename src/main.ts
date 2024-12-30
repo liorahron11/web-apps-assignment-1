@@ -6,6 +6,7 @@ import express, {Express} from 'express';
 import cors from 'cors';
 import commentsRoutes from "./routes/comments";
 import usersRoutes from "./routes/users";
+// import authRoutes from "./routes/auth"
 require('dotenv').config()
 
 const app: Express = express();
@@ -16,6 +17,7 @@ const initRoutes = (app: Express) => {
     app.use('/post', postsRoutes);
     app.use('/comment', commentsRoutes);
     app.use('/user', usersRoutes);
+    // app.use('/auth', authRoutes);
 };
 
 const runApp = (app: Express) => {
@@ -31,3 +33,8 @@ initRoutes(app);
 const server = runApp(app);
 
 export default server;
+
+// encrypt the passord
+// add JWT Auth
+// add registration, login, and logout endpoints
+// add documentation using Swagger
