@@ -4,14 +4,14 @@ import User from "../models/user.model";
 
 export class UserQueriesService {
     public getAllUsers = async (): Promise<HydratedDocument<IUser>[]> => {
-        const posts: HydratedDocument<IUser>[] = await User.find()
+        const users: HydratedDocument<IUser>[] = await User.find()
 
-        if (!posts) {
+        if (!users) {
             console.error(`could not find users`);
         } else {
             console.log(`users found successfully`);
 
-            return posts;
+            return users;
         }
     }
 

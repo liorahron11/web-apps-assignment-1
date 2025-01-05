@@ -7,7 +7,7 @@ export const isUserValid = (user: IUser): boolean => {
         throw new Error('user is missing');
     }
 
-    if (!user.id || !user.username || !user.email || !user.password) {
+    if (!user.email || !user.password || !user.email) {
         throw new Error('missing user fields');
     }
 

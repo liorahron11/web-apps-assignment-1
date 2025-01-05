@@ -27,7 +27,7 @@ usersRoutes.post('/', async (req, res) => {
             const isUserAdded: boolean = await userQueryService.addUser(user);
 
             if (isUserAdded) {
-                res.status(201).send('user created').json();
+                res.status(201).send('user created');
             } else {
                 res.status(500).send('error creating user');
             }
@@ -62,7 +62,7 @@ usersRoutes.delete('/:id', async (req, res) => {
 });
 
 usersRoutes.put('/:id', async (req, res) => {
-    let {isPasswordUpdated, isUsernameUpdated, isEmailUpdated}: {isPasswordUpdated: boolean, isUsernameUpdated: boolean, isEmailUpdated: boolean} = {isPasswordUpdated: false, isUsernameUpdated: false, isEmailUpdated: false};
+    let {isPasswordUpdated, isEmailUpdated}: {isPasswordUpdated: boolean, isEmailUpdated: boolean} = {isPasswordUpdated: false, isEmailUpdated: false};
     let moreInfo: string = "";
     const userId: string = req.params.id;
 
@@ -80,8 +80,8 @@ usersRoutes.put('/:id', async (req, res) => {
         moreInfo += "email is missing or not valid. ";
     }
 
-    if (isPasswordUpdated || isUsernameUpdated || isEmailUpdated){
-        return res.status(200).send(`${stringifyUpdatedUserFields(isPasswordUpdated, isUsernameUpdated, isEmailUpdated)} updated successfully. ${moreInfo}`);
+    if (isPasswordUpdated || isEmailUpdated){
+        return res.status(200).send(`${stringifyUpdatedUserFields(isPasswordUpdated, isEmailUpdated)} updated successfully. ${moreInfo}`);
     } else {
         res.status(500).send(`user not found or content up to date. ${moreInfo}`);
     }
