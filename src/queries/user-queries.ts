@@ -68,6 +68,20 @@ export class UserQueriesService {
         }
     }
 
+    public updateUserUsername = async (id: string, username: string): Promise<boolean> => {
+        const result: UpdateWriteOpResult = await User.updateOne({_id: id}, { $set: {username: username}});
+
+        if (result.modifiedCount > 0) {
+            console.log(`user ${id} username updated successfully`);
+
+            return true;
+        } else {
+            console.log('user not found or username up to date');
+
+            return false;
+        }
+    }
+
     public updateUserEmail = async (id: string, email: string): Promise<boolean> => {
         const result: UpdateWriteOpResult = await User.updateOne({_id: id}, { $set: {email: email}});
 

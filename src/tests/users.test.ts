@@ -30,7 +30,7 @@ describe('User API', () => {
 
     describe('POST /user', () => {
         it('should create a new user', async () => {
-            const newUser: IUser = { email: 'jane777@example.com', password: 'Jane1234!' };
+            const newUser: IUser = { email: 'jane777@example.com', password: 'Jane1234!', username: "lior" };
 
             const res = await request(server).post('/user')
                 .send({user: newUser})
@@ -44,6 +44,7 @@ describe('User API', () => {
             await UserModel.deleteOne({ _id: userInDb.id });
             expect(userInDb).not.toBeNull();
             expect(userInDb?.email).toBe('jane777@example.com');
+            expect(userInDb?.username).toBe("lior");
         });
     });
 

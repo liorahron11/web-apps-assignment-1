@@ -62,7 +62,7 @@ usersRoutes.delete('/:id', async (req, res) => {
 });
 
 usersRoutes.put('/:id', async (req, res) => {
-    let {isPasswordUpdated, isEmailUpdated}: {isPasswordUpdated: boolean, isEmailUpdated: boolean} = {isPasswordUpdated: false, isEmailUpdated: false};
+    let {isPasswordUpdated, isUsernameUpdated, isEmailUpdated}: {isPasswordUpdated: boolean, isUsernameUpdated: boolean, isEmailUpdated: boolean} = {isPasswordUpdated: false, isUsernameUpdated: false, isEmailUpdated: false};
     let moreInfo: string = "";
     const userId: string = req.params.id;
 
@@ -73,6 +73,13 @@ usersRoutes.put('/:id', async (req, res) => {
         moreInfo += "password is missing or not strong enough. ";
     }
 
+    const username: string = req.body.username?.toString();
+    if (username) {
+        isUsernameUpdated = await userQueryService.updateUserUsername(userId, username);
+    } else {
+        moreInfo += "username is missing. ";
+    }
+
     const email: string = req.body.email?.toString();
     if (email && isEmail(email)) {
         isEmailUpdated = await userQueryService.updateUserEmail(userId, email);
@@ -80,8 +87,8 @@ usersRoutes.put('/:id', async (req, res) => {
         moreInfo += "email is missing or not valid. ";
     }
 
-    if (isPasswordUpdated || isEmailUpdated){
-        return res.status(200).send(`${stringifyUpdatedUserFields(isPasswordUpdated, isEmailUpdated)} updated successfully. ${moreInfo}`);
+    if (isPasswordUpdated || isUsernameUpdated || isEmailUpdated){
+        return res.status(200).send(`${stringifyUpdatedUserFields(isPasswordUpdated, isUsernameUpdated, isEmailUpdated)} updated successfully. ${moreInfo}`);
     } else {
         res.status(500).send(`user not found or content up to date. ${moreInfo}`);
     }
