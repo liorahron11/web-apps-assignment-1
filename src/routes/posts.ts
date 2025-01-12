@@ -2,6 +2,7 @@ import express, {Router} from "express";
 import {addPost, getAllPosts, getPostById, getPostsBySender, updatePost} from "../queries/post-queries";
 import {HydratedDocument} from "mongoose";
 import {IPost} from "../interfaces/post.interface";
+import  {authMiddleware} from "../middlewares/authMiddleware";
 const postsRoutes: Router = express.Router();
 
 postsRoutes.post('/', async (req, res) => {

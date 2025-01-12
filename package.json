@@ -16,6 +16,7 @@
   },
   "scripts": {
     "test": "jest -i --coverage --detectOpenHandles",
+    "testUsers": "jest -i --coverage --detectOpenHandles --forceExit auth.test.ts",
     "start": "nodemon src/main.ts"
   },
   "author": "",

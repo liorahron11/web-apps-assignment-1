@@ -21,3 +21,11 @@ export const isUserValid = (user: IUser): boolean => {
 
     return true;
 }
+
+export const isLoginValuesValid = (email: string, password: string): boolean => {
+    if (!email || !password || !isEmail(email)) {
+        throw new Error('invalud login fields');
+    }
+
+    return true;
+}

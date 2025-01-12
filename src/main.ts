@@ -5,8 +5,8 @@ import postsRoutes from './routes/posts';
 import express, {Express} from 'express';
 import cors from 'cors';
 import commentsRoutes from "./routes/comments";
+import authRoutes from "./routes/auth"
 import usersRoutes from "./routes/users";
-// import authRoutes from "./routes/auth"
 require('dotenv').config()
 
 const app: Express = express();
@@ -17,7 +17,7 @@ const initRoutes = (app: Express) => {
     app.use('/post', postsRoutes);
     app.use('/comment', commentsRoutes);
     app.use('/user', usersRoutes);
-    // app.use('/auth', authRoutes);
+    app.use('/auth', authRoutes);
 };
 
 const runApp = (app: Express) => {

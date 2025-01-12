@@ -1,6 +1,7 @@
 import {IUser} from "../interfaces/user.interface";
 import {DeleteResult, HydratedDocument, UpdateWriteOpResult} from "mongoose";
 import User from "../models/user.model";
+import bcrypt from "bcrypt";
 
 export class UserQueriesService {
     public getAllUsers = async (): Promise<HydratedDocument<IUser>[]> => {
@@ -16,6 +17,18 @@ export class UserQueriesService {
     }
 
     public addUser = async (user: IUser): Promise<boolean> => {
+        const userEmail: string = user.email;
+        const retUser: HydratedDocument<IUser> = await User.findOne({userEmail});
+
+        if(retUser){
+            console.error('error occurred while adding user, user is exsiting');
+            return false;
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        const encryptedPassword = await bcrypt.hash(user.password, salt);
+        user.password = encryptedPassword;
+
         const doc: HydratedDocument<IUser> = new User(user);
         const res: HydratedDocument<IUser> = await doc.save();
 
@@ -55,6 +68,10 @@ export class UserQueriesService {
     }
 
     public updateUserPassword = async (id: string, password: string): Promise<boolean> => {
+        const salt = await bcrypt.genSalt(10);
+        const encryptedPassword = await bcrypt.hash(password, salt);
+        password = encryptedPassword;
+        
         const result: UpdateWriteOpResult = await User.updateOne({_id: id}, { $set: {password: password}});
 
         if (result.modifiedCount > 0) {
@@ -91,6 +108,65 @@ export class UserQueriesService {
             return true;
         } else {
             console.log('user not found or email up to date');
+
+            return false;
+        }
+    }
+///////////////////////////
+    public getUserByUsernameAndPassword = async (username: string, password: string): Promise<HydratedDocument<IUser>> => {
+        const salt = await bcrypt.genSalt(10);
+        const encryptedPassword = await bcrypt.hash(password, salt);
+        password = encryptedPassword;
+        const user: HydratedDocument<IUser> = await User.findOne({username, password});
+
+        if (!user) {
+            console.error(`could not find user`);
+        } else {
+            console.log(`user found successfully`);
+
+            return user;
+        }
+    }
+
+    public getUserByEmailAndPassword = async (email: string, password: string): Promise<HydratedDocument<IUser>> => {
+        const salt = await bcrypt.genSalt(10);
+        const encryptedPassword = await bcrypt.hash(password, salt);
+        password = encryptedPassword; 
+
+        const user: HydratedDocument<IUser> = await User.findOne({email, password});
+
+        if (!user) {
+            console.error(`could not find user`);
+        } else {
+            console.log(`user found successfully`);
+
+            return user;
+        }
+    }
+
+    public getUserByEmail = async (email: string): Promise<HydratedDocument<IUser>> => {
+
+        const user: HydratedDocument<IUser> = await User.findOne({email});
+
+        if (!user) {
+            console.error(`could not find user`);
+        } else {
+            console.log(`user found successfully`);
+
+            return user;
+        }
+    }
+
+
+    public updateUserRefreshTokens = async (id: string ,refreshToken: string[]): Promise<boolean> => {
+        const result: UpdateWriteOpResult = await User.updateOne({_id: id}, { $set: {refreshToken: refreshToken}});
+
+        if (result.modifiedCount > 0) {
+            console.log(`user ${id} refresh token updated successfully`);
+
+            return true;
+        } else {
+            console.log('user not found or refresh token up to date');
 
             return false;
         }
