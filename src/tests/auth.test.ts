@@ -1,5 +1,4 @@
 import request from 'supertest';
-import UserModel from '../models/user.model';
 import {IUser} from "../interfaces/user.interface";
 import server from "../main";
 import userModel from '../models/user.model';
