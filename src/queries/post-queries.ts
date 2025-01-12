@@ -3,7 +3,7 @@ import {HydratedDocument, UpdateWriteOpResult} from "mongoose";
 import Post from "../models/post.model";
 import { IComment } from "../interfaces/comment.interface";
 
-export const addPost = async (post: IPost): Promise<boolean> => {
+export const addNewPost = async (post: IPost): Promise<boolean> => {
     const doc: HydratedDocument<IPost> = new Post(post);
     const res: HydratedDocument<IPost> = await doc.save();
 
@@ -18,7 +18,7 @@ export const addPost = async (post: IPost): Promise<boolean> => {
     }
 }
 
-export const getAllPosts = async (): Promise<HydratedDocument<IPost>[]> => {
+export const fetchAllPosts = async (): Promise<HydratedDocument<IPost>[]> => {
     const posts: HydratedDocument<IPost>[] = await Post.find();
 
     if (!posts) {
@@ -30,7 +30,7 @@ export const getAllPosts = async (): Promise<HydratedDocument<IPost>[]> => {
     }
 }
 
-export const getPostById = async (id: number): Promise<HydratedDocument<IPost>> => {
+export const fetchPostById = async (id: number): Promise<HydratedDocument<IPost>> => {
     const post: HydratedDocument<IPost> = await Post.findOne({id});
 
     if (!post) {
@@ -42,7 +42,7 @@ export const getPostById = async (id: number): Promise<HydratedDocument<IPost>> 
     }
 }
 
-export const getPostsBySender = async (senderId: number): Promise<HydratedDocument<IPost>[]> => {
+export const fetchPostsBySender = async (senderId: number): Promise<HydratedDocument<IPost>[]> => {
     const posts: HydratedDocument<IPost>[] = await Post.find({senderId})
 
     if (!posts) {
@@ -54,7 +54,7 @@ export const getPostsBySender = async (senderId: number): Promise<HydratedDocume
     }
 }
 
-export const updatePost = async (id: number, content: string): Promise<boolean> => {
+export const updatePostDetails = async (id: number, content: string): Promise<boolean> => {
     const result: UpdateWriteOpResult = await Post.updateOne({id}, {content});
 
     if (result.modifiedCount > 0) {
@@ -70,7 +70,7 @@ export const updatePost = async (id: number, content: string): Promise<boolean> 
 
 
 export const getPostCommentsById = async (id: number): Promise<IComment[]> => {
-    const post: HydratedDocument<IPost> = await getPostById(id);
+    const post: HydratedDocument<IPost> = await fetchPostById(id);
 
     if (!post) {
         console.error(`didnt find post ${id}`);
@@ -82,7 +82,7 @@ export const getPostCommentsById = async (id: number): Promise<IComment[]> => {
 }
 
 export const addCommentToPostId = async (id: number, comment: IComment): Promise<IComment[]> => {
-    const post: HydratedDocument<IPost> = await getPostById(id);
+    const post: HydratedDocument<IPost> = await fetchPostById(id);
 
     if (!post) {
         console.error(`didnt find post ${id}`);
@@ -99,7 +99,7 @@ export const addCommentToPostId = async (id: number, comment: IComment): Promise
 }
 
 export const updateCommentInPost = async (postId: number, commentId: number ,newContent: string): Promise<boolean> => {
-    const post: HydratedDocument<IPost> = await getPostById(postId);
+    const post: HydratedDocument<IPost> = await fetchPostById(postId);
 
     if (!post) {
         console.error(`didnt find post ${postId}`);
@@ -136,7 +136,7 @@ export const deleteCommentInPost = async (postId: number, commentId: number): Pr
 }
 
 export const getSpecificCommentInPost = async (postId: number, commentId: number): Promise<IComment> => {
-    const post: HydratedDocument<IPost> = await getPostById(postId);
+    const post: HydratedDocument<IPost> = await fetchPostById(postId);
     
     if (!post) {
         console.error(`didnt find post ${postId}`);
