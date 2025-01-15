@@ -37,4 +37,6 @@ export default server;
 // encrypt the passord
 // add JWT Auth
 // add registration, login, and logout endpoints
+// add authmid for posts and comment enpoints
+//add some tests for auth
 // add documentation using Swagger

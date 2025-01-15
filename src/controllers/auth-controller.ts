@@ -50,7 +50,7 @@ const register = async (req: Request, res: Response) => {
             const isUserAdded: boolean = await userQueryService.addUser(user);
 
             if (isUserAdded) {
-                res.status(201).send('register success');
+                res.status(200).send('register success');
             } else {
                 res.status(500).send('error while try to register');
             }
