@@ -54,9 +54,9 @@ afterAll(async () => {
 });
 
 describe('Comments API', () => {
-    describe('GET /comment', () => {
+    describe('GET /comments', () => {
         it('should return a list of comments of post', async () => {
-            const res = await request(server).get('/comment/999').set(
+            const res = await request(server).get('/comments/999').set(
                 { authorization: "JWT " + testUser.accessToken });
             expect(res.status).toBe(200);
             expect(res.body).toBeInstanceOf(Array);
@@ -64,16 +64,16 @@ describe('Comments API', () => {
         });
 
         it('should return a comment with id 100 in post with id 999', async () => {
-            const res = await request(server).get('/comment/999/100').set(
+            const res = await request(server).get('/comments/999/100').set(
                 { authorization: "JWT " + testUser.accessToken });
             expect(res.status).toBe(200);
             expect(res.body).toMatchObject(postMock.comments[0]);
         });
     });
 
-    describe('POST /comment', () => {
+    describe('POST /comments', () => {
         it('should create a new comment on a post', async () => {
-            const res = await request(server).post('/comment/999')
+            const res = await request(server).post('/comments/999')
                 .send({comment: commentMock})
                 .set('Content-Type', 'application/json')
                 .set('Accept', 'application/json')
@@ -93,11 +93,11 @@ describe('Comments API', () => {
         });
     });
 
-    describe('PUT /comment', () => {
+    describe('PUT /comments', () => {
         it('should update comment content', async () => {
             const newCommentFields: Partial<IComment> = { content: 'new comment content' };
 
-            const res = await request(server).put('/comment/999/100')
+            const res = await request(server).put('/comments/999/100')
                 .send(newCommentFields)
                 .set('Content-Type', 'application/json')
                 .set('Accept', 'application/json')
@@ -117,9 +117,9 @@ describe('Comments API', () => {
         });
     });
 
-    describe('DELETE /comment', () => {
+    describe('DELETE /comments', () => {
         it('should delete a comment', async () => {
-            const res = await request(server).delete('/comment/999/100').set(
+            const res = await request(server).delete('/comments/999/100').set(
                 { authorization: "JWT " + testUser.accessToken });
 
             expect(res.status).toBe(200);

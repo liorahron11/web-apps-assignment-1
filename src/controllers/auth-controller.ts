@@ -7,6 +7,7 @@ import {isUserValid, isLoginValuesValid} from "../services/validation-service";
 import {authMiddleware} from "../middlewares/authMiddleware";
 import bcrypt from "bcrypt";
 
+
 const userQueryService: UserQueriesService = new UserQueriesService();
 const jwt = require('jsonwebtoken');
 
@@ -70,7 +71,7 @@ const login = async (req: Request, res: Response) => {
         if(isLoginValuesValid(email, password)) {
             const retUser: HydratedDocument<IUser> = await userQueryService.getUserByEmail(email);
 
-            if (retUser.password != null && retUser.email != null) {
+            if (retUser != null && retUser.password != null && retUser.email != null) {
                 const match = await bcrypt.compare(password, retUser.password);
 
                 if(match) {
@@ -109,10 +110,10 @@ const login = async (req: Request, res: Response) => {
 
 const refresh = async (req: Request, res: Response) => {
     try {
-        const user: HydratedDocument<IUser> = await userQueryService.getUserById(req.params.userId);
+        const user: HydratedDocument<IUser> = await userQueryService.getUserById(req.body.userId);
 
         if(user == null) return res.status(403).send("error was accourd");
-        if(!user.refreshToken.includes(req.params.token)){
+        if(!user.refreshToken.includes(req.body.token)){
             user.refreshToken = [];
             await userQueryService.updateUserRefreshTokens(user.id, user.refreshToken);
             return res.status(403).send("invalid request");
@@ -124,7 +125,7 @@ const refresh = async (req: Request, res: Response) => {
             return;
         }
 
-        user.refreshToken[user.refreshToken.indexOf(req.params.token)] = tokens.refreshToken;
+        user.refreshToken[user.refreshToken.indexOf(req.body.token)] = tokens.refreshToken;
 
         await userQueryService.updateUserRefreshTokens(user.id, user.refreshToken);
         res.status(200).send({
@@ -138,10 +139,10 @@ const refresh = async (req: Request, res: Response) => {
 
 const logout = async (req: Request, res: Response) => {
     try {
-        const user: HydratedDocument<IUser> = await userQueryService.getUserById(req.params.userId);
+        const user: HydratedDocument<IUser> = await userQueryService.getUserById(req.body.userId);
 
         if(user == null) return res.status(403).send("error was accourd");
-        if(!user.refreshToken.includes(req.params.token)){
+        if(!user.refreshToken.includes(req.body.token)){
             user.refreshToken = [];
             await userQueryService.updateUserRefreshTokens(user.id, user.refreshToken);
             return res.status(403).send("invalid request");

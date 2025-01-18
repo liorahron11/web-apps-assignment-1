@@ -23,8 +23,8 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
             res.status(401).send('Access Denied');
             return;
         }
-        req.params.userId = (payload as Payload)._id;
-        req.params.token = token;
+        req.body.userId = (payload as Payload)._id;
+        req.body.accessToken = token;
         next();
     });
 };
