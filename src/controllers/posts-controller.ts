@@ -32,7 +32,7 @@ const getAllPosts = async (req: Request, res: Response) => {
 };
 
 const getPostById = async (req: Request, res: Response) => {
-    const postId: number = Number(req.params.id);
+    const postId: string = String(req.params.id);
 
     if (postId) {
         const post: HydratedDocument<IPost> = await fetchPostById(postId);
@@ -48,7 +48,7 @@ const getPostById = async (req: Request, res: Response) => {
 };
 
 const getPostsBySenderId = async (req: Request, res: Response) => {
-    const senderId: number = Number(req.query.sender);
+    const senderId: string = req.query.sender as string;
 
     if (senderId) {
         const posts: HydratedDocument<IPost>[] = await fetchPostsBySender(senderId);
@@ -64,7 +64,7 @@ const getPostsBySenderId = async (req: Request, res: Response) => {
 };
 
 const updatePost = async (req: Request, res: Response) => {
-    const postId: number = Number(req.params.id);
+    const postId: string = req.params.id;
     const newContent: string = req.body.content;
 
     if (postId) {

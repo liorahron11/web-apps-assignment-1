@@ -13,13 +13,6 @@ const commentsRoutes: Router = express.Router();
 
 /**
  * @swagger
- * tags:
- *   name: Comments
- *   description: The Comments API
- */
-
-/**
- * @swagger
  * paths:
  *   /comments/{id}:
  *     get:
@@ -33,7 +26,7 @@ const commentsRoutes: Router = express.Router();
  *           required: true
  *           description: The ID of the post to retrieve comments for
  *           schema:
- *             type: integer
+ *             type: string
  *       security:
  *         - bearerAuth: []
  *       responses:
@@ -64,7 +57,7 @@ const commentsRoutes: Router = express.Router();
  *           required: true
  *           description: The ID of the post to add a comment to
  *           schema:
- *             type: integer
+ *             type: string
  *       requestBody:
  *         required: true
  *         content:
@@ -98,13 +91,13 @@ const commentsRoutes: Router = express.Router();
  *           required: true
  *           description: The ID of the post the comment belongs to
  *           schema:
- *             type: integer
+ *             type: string
  *         - in: path
  *           name: commentId
  *           required: true
  *           description: The ID of the comment to update
  *           schema:
- *             type: integer
+ *             type: string
  *       requestBody:
  *         required: true
  *         content:
@@ -139,13 +132,13 @@ const commentsRoutes: Router = express.Router();
  *           required: true
  *           description: The ID of the post the comment belongs to
  *           schema:
- *             type: integer
+ *             type: string
  *         - in: path
  *           name: commentId
  *           required: true
  *           description: The ID of the comment to delete
  *           schema:
- *             type: integer
+ *             type: string
  *       security:
  *         - bearerAuth: []
  *       responses:
@@ -170,13 +163,13 @@ const commentsRoutes: Router = express.Router();
  *           required: true
  *           description: The ID of the post the comment belongs to
  *           schema:
- *             type: integer
+ *             type: string
  *         - in: path
  *           name: commentId
  *           required: true
  *           description: The ID of the comment to retrieve
  *           schema:
- *             type: integer
+ *             type: string
  *       security:
  *         - bearerAuth: []
  *       responses:
