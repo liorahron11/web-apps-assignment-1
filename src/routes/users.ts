@@ -9,6 +9,13 @@ import {stringifyUpdatedUserFields} from "../services/query-utils";
 const usersRoutes: Router = express.Router();
 const userQueryService: UserQueriesService = new UserQueriesService();
 
+/**
+* @swagger
+* tags:
+*   name: Users
+*   description: The Users API
+*/
+
 usersRoutes.get('/all', async (req, res) => {
     const posts: HydratedDocument<IUser>[] = await userQueryService.getAllUsers();
 

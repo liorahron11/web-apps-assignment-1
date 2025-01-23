@@ -46,9 +46,9 @@ beforeAll(async () => {
 })
 
 describe('Posts API', () => {
-    describe('GET /post', () => {
+    describe('GET /posts', () => {
         it('should return a list of users', async () => {
-            const res = await request(server).get('/post/all').set(
+            const res = await request(server).get('/posts/all').set(
                 { authorization: "JWT " + testUser.accessToken });
             expect(res.status).toBe(200);
             expect(res.body).toBeInstanceOf(Array);
@@ -57,7 +57,7 @@ describe('Posts API', () => {
         it('should return a post with id 999', async () => {
             await PostModel.create(postMock);
 
-            const res = await request(server).get('/post/999').set(
+            const res = await request(server).get('/posts/999').set(
                 { authorization: "JWT " + testUser.accessToken });;
             expect(res.status).toBe(200);
             expect(res.body).toMatchObject(postMock);
@@ -66,7 +66,7 @@ describe('Posts API', () => {
         it('should return a post with senderID 999', async () => {
             await PostModel.create(postMock);
 
-            const res = await request(server).get('/post?sender=155').set(
+            const res = await request(server).get('/posts?sender=155').set(
                 { authorization: "JWT " + testUser.accessToken });;
             expect(res.status).toBe(200);
 
@@ -78,9 +78,9 @@ describe('Posts API', () => {
         });
     });
 
-    describe('POST /post', () => {
+    describe('POST /posts', () => {
         it('should create a new post', async () => {
-            const res = await request(server).post('/post')
+            const res = await request(server).post('/posts')
                 .send({post: postMock})
                 .set('Content-Type', 'application/json')
                 .set('Accept', 'application/json')
@@ -95,13 +95,13 @@ describe('Posts API', () => {
         });
     });
 
-    describe('PUT /post', () => {
+    describe('PUT /posts', () => {
         it('should update post content', async () => {
             await PostModel.create(postMock);
 
             const newPostFields: Partial<IPost> = { content: 'new post content' };
 
-            const res = await request(server).put('/post/999')
+            const res = await request(server).put('/posts/999')
                 .send(newPostFields)
                 .set('Content-Type', 'application/json')
                 .set('Accept', 'application/json')

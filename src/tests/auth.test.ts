@@ -90,7 +90,7 @@ describe("Auth Tests", () => {
     });
   
     test("Auth test me", async () => {
-      const response = await request(server).post("/post").send({
+      const response = await request(server).post("/posts").send({
         post : {
         id: 999,
         senderId: 155,
@@ -98,7 +98,7 @@ describe("Auth Tests", () => {
         comments: []
       }});
       expect(response.statusCode).not.toBe(201);
-      const response2 = await request(server).post("/post").set(
+      const response2 = await request(server).post("/posts").set(
         { authorization: "JWT " + testUser.accessToken }
       ).send({
         post : {
@@ -112,8 +112,11 @@ describe("Auth Tests", () => {
   
     test("Test refresh token", async () => {
       const response = await request(server).post(baseUrl + "/refresh").set(
-            { authorization: "JWT " + testUser.refreshToken })
-      .send({});
+            { authorization: "JWT " + testUser.accessToken })
+      .send({
+        userId: testUser.id,
+        token: testUser.refreshToken,
+      });
       expect(response.statusCode).toBe(200);
       expect(response.body.accessToken).toBeDefined();
       expect(response.body.refreshToken).toBeDefined();
@@ -123,12 +126,15 @@ describe("Auth Tests", () => {
   
     test("Double use refresh token", async () => {
       const response = await request(server).post(baseUrl + "/refresh").set(
-        { authorization: "JWT " + testUser.refreshToken }).send({});
+        { authorization: "JWT " + testUser.accessToken }).send({
+          userId: testUser.id,
+          token: testUser.refreshToken,
+        });
       expect(response.statusCode).toBe(200);
       const refreshTokenNew = response.body.refreshToken;
   
       const response2 = await request(server).post(baseUrl + "/refresh").set(
-        { authorization: "JWT " + testUser.refreshToken }).send({});
+        { authorization: "JWT " + testUser.accessToken }).send({});
       expect(response2.statusCode).not.toBe(200);
   
       const response3 = await request(server).post(baseUrl + "/refresh").set(
@@ -143,11 +149,17 @@ describe("Auth Tests", () => {
       testUser.refreshToken = response.body.refreshToken;
   
       const response2 = await request(server).post(baseUrl + "/logout").set(
-        { authorization: "JWT " + testUser.refreshToken }).send({});
+        { authorization: "JWT " + testUser.accessToken }).send({
+          userId: testUser.id,
+          token: testUser.refreshToken,
+        });
       expect(response2.statusCode).toBe(200);
   
       const response3 = await request(server).post(baseUrl + "/refresh").set(
-        { authorization: "JWT " + testUser.refreshToken }).send({});
+        { authorization: "JWT " + testUser.accessToken }).send({
+          userId: testUser.id,
+          token: testUser.refreshToken,
+        });
       expect(response3.statusCode).not.toBe(200);
   
     });

@@ -18,7 +18,7 @@ export class UserQueriesService {
 
     public addUser = async (user: IUser): Promise<boolean> => {
         const userEmail: string = user.email;
-        const retUser: HydratedDocument<IUser> = await User.findOne({userEmail});
+        const retUser: HydratedDocument<IUser> = await User.findOne({email: userEmail});
 
         if(retUser){
             console.error('error occurred while adding user, user is exsiting');
