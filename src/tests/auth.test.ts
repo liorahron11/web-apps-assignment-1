@@ -92,8 +92,7 @@ describe("Auth Tests", () => {
     test("Auth test me", async () => {
       const response = await request(server).post("/posts").send({
         post : {
-        id: 999,
-        senderId: 155,
+        senderId: "155",
         content: "testing post",
         comments: []
       }});
@@ -102,8 +101,7 @@ describe("Auth Tests", () => {
         { authorization: "JWT " + testUser.accessToken }
       ).send({
         post : {
-        id: 999,
-        senderId: 155,
+        senderId: "155",
         content: "testing post",
         comments: []
       }});

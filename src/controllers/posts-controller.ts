@@ -9,10 +9,12 @@ const addPost = async (req: Request, res: Response) => {
     const post: IPost = req.body.post;
 
     if (post) {
-        const isPostAdded: boolean = await addNewPost(post);
-
-        if (isPostAdded) {
-            res.status(201).send('post added successfully');
+        const postId: string = await addNewPost(post);
+        if (postId != "0") {
+            res.status(201).send({
+                message: 'Post added successfully',
+                postId: postId  
+            });
         } else {
             res.status(500).send('error adding post');
         }
@@ -76,7 +78,7 @@ const updatePost = async (req: Request, res: Response) => {
             res.status(500).send('error updating the post');
         }
     } else {
-        res.status(500).send('post ID should be a number');
+        res.status(500).send('post ID not exist');
     }
 };
 

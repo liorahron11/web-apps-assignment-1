@@ -18,7 +18,9 @@
   },
   "scripts": {
     "test": "jest -i --coverage --detectOpenHandles --runInBand",
-    "testAuth": "jest -i --coverage --detectOpenHandles --forceExit --runInBand auth.test.ts",
+    "testAuth": "jest -i --detectOpenHandles --forceExit --runInBand auth.test.ts",
+    "testPosts": "jest -i --detectOpenHandles --forceExit --runInBand posts.test.ts",
+    "testComments": "jest -i --detectOpenHandles --forceExit --runInBand comments.test.ts",
     "start": "nodemon src/main.ts"
   },
   "author": "",

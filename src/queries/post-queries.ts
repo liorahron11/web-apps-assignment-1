@@ -4,19 +4,26 @@ import Post from "../models/post.model";
 import { IComment } from "../interfaces/comment.interface";
 import {isIdValid} from "../services/query-utils"
 
-export const addNewPost = async (post: IPost): Promise<boolean> => {
-    const doc: HydratedDocument<IPost> = new Post(post);
-    const res: HydratedDocument<IPost> = await doc.save();
+export const addNewPost = async (post: IPost): Promise<string> => {
+    try {
+        const doc: HydratedDocument<IPost> = new Post(post);
+        const res: HydratedDocument<IPost> = await doc.save();
 
-    if (!res) {
+        if (!res.id) {
+            console.error('error occurred while adding post');
+
+            return "0";
+        } else {
+            console.log(`post added successfully`);
+
+            return res.id;
+        }
+    } catch (error) {
         console.error('error occurred while adding post');
 
-        return false
-    } else {
-        console.log(`post added successfully`);
-
-        return true;
+        return "0"
     }
+    
 }
 
 export const fetchAllPosts = async (): Promise<HydratedDocument<IPost>[]> => {
@@ -42,8 +49,8 @@ export const fetchPostById = async (id: string): Promise<HydratedDocument<IPost>
     } else {
         console.log(`post ${id} found successfully`);
 
-        return post;
     }
+    return post;
 }
 
 export const fetchPostsBySender = async (senderId: string): Promise<HydratedDocument<IPost>[]> => {
@@ -124,20 +131,26 @@ export const updateCommentInPost = async (postId: string, commentId: string ,new
 }
 
 export const deleteCommentInPost = async (postId: string, commentId: string): Promise<boolean> => {
-    const post: HydratedDocument<IPost> = await Post.findOneAndUpdate(
-        {_id: postId},
-        {$pull: { comments: { _id: commentId } }},
-        { new: true }
-    );
-
-    if (!post) {
-        console.error(`didnt find post ${postId}`);
+    try {
+        const post: HydratedDocument<IPost> = await Post.findOneAndUpdate(
+            {_id: postId},
+            {$pull: { comments: { _id: commentId } }},
+            { new: true }
+        );
+    
+        if (!post) {
+            console.error(`didnt find post ${postId}`);
+            return false;
+        } else {
+            
+            console.log(`remove comment ${commentId} in post ${postId}`);
+            return true;
+        }
+    } catch (error) {
+        console.error(error);
         return false;
-    } else {
-        
-        console.log(`remove comment ${commentId} in post ${postId}`);
-        return true;
     }
+    
 }
 
 export const getSpecificCommentInPost = async (postId: string, commentId: string): Promise<IComment> => {
