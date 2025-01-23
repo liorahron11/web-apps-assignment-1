@@ -3,6 +3,10 @@ import PostModel from "../models/post.model";
 import {IPost} from "../interfaces/post.interface";
 import server from "../main";
 import {IComment} from "../interfaces/comment.interface";
+import {IUser} from "../interfaces/user.interface";
+import userModel from '../models/user.model';
+import postModel from '../models/post.model';
+
 const postMock: IPost = {
     id: 999,
     senderId: 155,
@@ -20,26 +24,48 @@ const commentMock: IComment = {
     senderId: 92
 }
 
+type User = IUser & {
+    accessToken?: string,
+    refreshToken?: string
+  };
+
+const testUser: User = {
+    username: "shalev",
+    email: "test@user.com",
+    password: "Testpassword6677!",
+}
+
 beforeAll(async () => {
     await PostModel.create(postMock);
-});
+    const response = await request(server).post("/auth/register").send(testUser);
+    const response2 = await request(server).post("/auth/login").send(testUser);
+    const accessToken = response2.body.accessToken;
+    const refreshToken = response2.body.refreshToken;
+    testUser.accessToken = accessToken;
+    testUser.refreshToken = refreshToken;
+    testUser.id = response2.body._id;
+})
 
 afterAll(async () => {
-    await PostModel.deleteOne({ id: 999 });
+    console.log("afterAll");
+    await userModel.deleteMany();
+    await postModel.deleteMany();
     server.close();
 });
 
 describe('Comments API', () => {
     describe('GET /comment', () => {
         it('should return a list of comments of post', async () => {
-            const res = await request(server).get('/comment/999');
+            const res = await request(server).get('/comment/999').set(
+                { authorization: "JWT " + testUser.accessToken });
             expect(res.status).toBe(200);
             expect(res.body).toBeInstanceOf(Array);
             expect(res.body[0]).toMatchObject(postMock.comments[0]);
         });
 
         it('should return a comment with id 100 in post with id 999', async () => {
-            const res = await request(server).get('/comment/999/100');
+            const res = await request(server).get('/comment/999/100').set(
+                { authorization: "JWT " + testUser.accessToken });
             expect(res.status).toBe(200);
             expect(res.body).toMatchObject(postMock.comments[0]);
         });
@@ -50,7 +76,8 @@ describe('Comments API', () => {
             const res = await request(server).post('/comment/999')
                 .send({comment: commentMock})
                 .set('Content-Type', 'application/json')
-                .set('Accept', 'application/json');
+                .set('Accept', 'application/json')
+                .set({ authorization: "JWT " + testUser.accessToken });
 
             expect(res.status).toBe(201);
             expect(res.text).toBe('comment added successfully');
@@ -73,7 +100,8 @@ describe('Comments API', () => {
             const res = await request(server).put('/comment/999/100')
                 .send(newCommentFields)
                 .set('Content-Type', 'application/json')
-                .set('Accept', 'application/json');
+                .set('Accept', 'application/json')
+                .set({ authorization: "JWT " + testUser.accessToken });
 
             expect(res.status).toBe(200);
             expect(res.text).toContain('comment updated successfully');
@@ -91,7 +119,8 @@ describe('Comments API', () => {
 
     describe('DELETE /comment', () => {
         it('should delete a comment', async () => {
-            const res = await request(server).delete('/comment/999/100');
+            const res = await request(server).delete('/comment/999/100').set(
+                { authorization: "JWT " + testUser.accessToken });
 
             expect(res.status).toBe(200);
             expect(res.text).toContain('comment deleted successfully');

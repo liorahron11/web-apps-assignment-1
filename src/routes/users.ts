@@ -40,7 +40,7 @@ usersRoutes.post('/', async (req, res) => {
 });
 
 usersRoutes.get('/:id', async (req, res) => {
-    const userId: number = Number(req.params.id);
+    const userId: string = req.params.id;
     const user: HydratedDocument<IUser> = await userQueryService.getUserById(userId);
 
     if (user) {
@@ -51,7 +51,7 @@ usersRoutes.get('/:id', async (req, res) => {
 });
 
 usersRoutes.delete('/:id', async (req, res) => {
-    const userId: number = Number(req.params.id);
+    const userId: string = req.params.id;
     const isDeleteSuccess: boolean = await userQueryService.deleteUser(userId);
 
     if (isDeleteSuccess){
@@ -64,7 +64,7 @@ usersRoutes.delete('/:id', async (req, res) => {
 usersRoutes.put('/:id', async (req, res) => {
     let {isPasswordUpdated, isUsernameUpdated, isEmailUpdated}: {isPasswordUpdated: boolean, isUsernameUpdated: boolean, isEmailUpdated: boolean} = {isPasswordUpdated: false, isUsernameUpdated: false, isEmailUpdated: false};
     let moreInfo: string = "";
-    const userId: number = Number(req.params.id);
+    const userId: string = req.params.id;
 
     const password: string = req.body.password?.toString();
     if (password && isStrongPassword(password)) {
