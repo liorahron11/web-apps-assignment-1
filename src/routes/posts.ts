@@ -19,10 +19,10 @@ const postsRoutes: Router = express.Router();
  *       type: object
  *       properties:
  *         id:
- *           type: integer
+ *           type: string
  *           description: The unique ID of the comment
  *         senderId:
- *           type: integer
+ *           type: string
  *           description: The ID of the sender of the comment
  *         content:
  *           type: string
@@ -31,10 +31,10 @@ const postsRoutes: Router = express.Router();
  *       type: object
  *       properties:
  *         id:
- *           type: integer
+ *           type: string
  *           description: The unique ID of the post
  *         senderId:
- *           type: integer
+ *           type: string
  *           description: The ID of the sender of the post
  *         content:
  *           type: string
@@ -120,7 +120,7 @@ postsRoutes.get("/all", authMiddleware,postsController.getAllPosts);
  *           required: true
  *           description: The ID of the post
  *           schema:
- *             type: integer
+ *             type: string
  *       responses:
  *         200:
  *           description: The requested post
@@ -150,7 +150,7 @@ postsRoutes.get("/:id", authMiddleware, postsController.getPostById);
  *           required: true
  *           description: The sender's ID
  *           schema:
- *             type: integer
+ *             type: string
  *       responses:
  *         200:
  *           description: List of posts from the sender
@@ -182,7 +182,7 @@ postsRoutes.get("/", authMiddleware,postsController.getPostsBySenderId);
  *           required: true
  *           description: The ID of the post to update
  *           schema:
- *             type: integer
+ *             type: string
  *       requestBody:
  *         required: true
  *         content:

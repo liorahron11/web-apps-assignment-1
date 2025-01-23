@@ -14,7 +14,7 @@ const commentsRoutes: Router = express.Router();
 
 //get all comments by post id 
 const getCommentsById = async (req: Request, res: Response) => {
-    const postId: number = Number(req.params.id);
+    const postId: string = req.params.id;
 
     if (postId) {
         const postComments: IComment[] = await getPostCommentsById(postId);
@@ -32,7 +32,7 @@ const getCommentsById = async (req: Request, res: Response) => {
 
 // add comment to post by id
 const addCommentToPost = async (req: Request, res: Response) => {
-    const postId: number = Number(req.params.postId);
+    const postId: string = req.params.postId;
     const newComment: IComment = req.body.comment;
     if (postId) {
 
@@ -50,8 +50,8 @@ const addCommentToPost = async (req: Request, res: Response) => {
 
 // Update a comment in a post
 const updateComment = async (req: Request, res: Response) => {
-    const postId: number = Number(req.params.postId);
-    const commentId: number = Number(req.params.commentId);
+    const postId: string = req.params.postId;
+    const commentId: string = req.params.commentId;
     const newContent: string = req.body.content;
 
     const isUpdateSuccess: boolean = await updateCommentInPost(postId, commentId, newContent);
@@ -65,8 +65,8 @@ const updateComment = async (req: Request, res: Response) => {
 
 // delete a comment in a post
 const deleteComment = async (req: Request, res: Response) => {
-    const postId: number = Number(req.params.postId);
-    const commentId: number = Number(req.params.commentId);
+    const postId: string = req.params.postId;
+    const commentId: string = req.params.commentId;
 
     const isDeleteSuccess: boolean = await deleteCommentInPost(postId, commentId);
 
@@ -79,8 +79,8 @@ const deleteComment = async (req: Request, res: Response) => {
 
 // get a specif comment by id in a post by id
 const getSpecificComment = async (req: Request, res: Response) => {
-    const postId: number = Number(req.params.postId);
-    const commentId: number = Number(req.params.commentId);
+    const postId: string = req.params.postId;
+    const commentId: string = req.params.commentId;
 
     const comment: IComment = await getSpecificCommentInPost(postId, commentId);
 

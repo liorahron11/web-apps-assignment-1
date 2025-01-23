@@ -6,7 +6,7 @@ import express, {Express} from 'express';
 import cors from 'cors';
 import commentsRoutes from "./routes/comments";
 import authRoutes from "./routes/auth"
-import usersRoutes from "./routes/users";
+// import usersRoutes from "./routes/users";
 require('dotenv').config()
 import swaggerUI from "swagger-ui-express"
 import swaggerJsDoc from "swagger-jsdoc"
@@ -33,7 +33,7 @@ app.use(cors());
 const initRoutes = (app: Express) => {
     app.use('/posts', postsRoutes);
     app.use('/comments', commentsRoutes);
-    app.use('/user', usersRoutes);
+    // app.use('/user', usersRoutes);
     app.use('/auth', authRoutes);
     app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs));
 };

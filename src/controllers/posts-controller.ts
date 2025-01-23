@@ -9,10 +9,12 @@ const addPost = async (req: Request, res: Response) => {
     const post: IPost = req.body.post;
 
     if (post) {
-        const isPostAdded: boolean = await addNewPost(post);
-
-        if (isPostAdded) {
-            res.status(201).send('post added successfully');
+        const postId: string = await addNewPost(post);
+        if (postId != "0") {
+            res.status(201).send({
+                message: 'Post added successfully',
+                postId: postId  
+            });
         } else {
             res.status(500).send('error adding post');
         }
@@ -32,7 +34,7 @@ const getAllPosts = async (req: Request, res: Response) => {
 };
 
 const getPostById = async (req: Request, res: Response) => {
-    const postId: number = Number(req.params.id);
+    const postId: string = String(req.params.id);
 
     if (postId) {
         const post: HydratedDocument<IPost> = await fetchPostById(postId);
@@ -48,7 +50,7 @@ const getPostById = async (req: Request, res: Response) => {
 };
 
 const getPostsBySenderId = async (req: Request, res: Response) => {
-    const senderId: number = Number(req.query.sender);
+    const senderId: string = req.query.sender as string;
 
     if (senderId) {
         const posts: HydratedDocument<IPost>[] = await fetchPostsBySender(senderId);
@@ -64,7 +66,7 @@ const getPostsBySenderId = async (req: Request, res: Response) => {
 };
 
 const updatePost = async (req: Request, res: Response) => {
-    const postId: number = Number(req.params.id);
+    const postId: string = req.params.id;
     const newContent: string = req.body.content;
 
     if (postId) {
@@ -76,7 +78,7 @@ const updatePost = async (req: Request, res: Response) => {
             res.status(500).send('error updating the post');
         }
     } else {
-        res.status(500).send('post ID should be a number');
+        res.status(500).send('post ID not exist');
     }
 };
 

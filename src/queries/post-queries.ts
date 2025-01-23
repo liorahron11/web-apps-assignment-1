@@ -2,20 +2,28 @@ import {IPost} from "../interfaces/post.interface";
 import {HydratedDocument, UpdateWriteOpResult} from "mongoose";
 import Post from "../models/post.model";
 import { IComment } from "../interfaces/comment.interface";
+import {isIdValid} from "../services/query-utils"
 
-export const addNewPost = async (post: IPost): Promise<boolean> => {
-    const doc: HydratedDocument<IPost> = new Post(post);
-    const res: HydratedDocument<IPost> = await doc.save();
+export const addNewPost = async (post: IPost): Promise<string> => {
+    try {
+        const doc: HydratedDocument<IPost> = new Post(post);
+        const res: HydratedDocument<IPost> = await doc.save();
 
-    if (!res) {
+        if (!res.id) {
+            console.error('error occurred while adding post');
+
+            return "0";
+        } else {
+            console.log(`post added successfully`);
+
+            return res.id;
+        }
+    } catch (error) {
         console.error('error occurred while adding post');
 
-        return false
-    } else {
-        console.log(`post added successfully`);
-
-        return true;
+        return "0"
     }
+    
 }
 
 export const fetchAllPosts = async (): Promise<HydratedDocument<IPost>[]> => {
@@ -30,19 +38,22 @@ export const fetchAllPosts = async (): Promise<HydratedDocument<IPost>[]> => {
     }
 }
 
-export const fetchPostById = async (id: number): Promise<HydratedDocument<IPost>> => {
-    const post: HydratedDocument<IPost> = await Post.findOne({id});
-
+export const fetchPostById = async (id: string): Promise<HydratedDocument<IPost>> => {
+    let post: HydratedDocument<IPost>;
+    if(isIdValid(id)) {
+        post = await Post.findOne({_id: id});
+    }
+    
     if (!post) {
         console.error(`didnt find post ${id}`);
     } else {
         console.log(`post ${id} found successfully`);
 
-        return post;
     }
+    return post;
 }
 
-export const fetchPostsBySender = async (senderId: number): Promise<HydratedDocument<IPost>[]> => {
+export const fetchPostsBySender = async (senderId: string): Promise<HydratedDocument<IPost>[]> => {
     const posts: HydratedDocument<IPost>[] = await Post.find({senderId})
 
     if (!posts) {
@@ -54,8 +65,8 @@ export const fetchPostsBySender = async (senderId: number): Promise<HydratedDocu
     }
 }
 
-export const updatePostDetails = async (id: number, content: string): Promise<boolean> => {
-    const result: UpdateWriteOpResult = await Post.updateOne({id}, {content});
+export const updatePostDetails = async (id: string, content: string): Promise<boolean> => {
+    const result: UpdateWriteOpResult = await Post.updateOne({_id: id}, { $set: {content: content}});
 
     if (result.modifiedCount > 0) {
         console.log(`post ${id} content updated successfully`);
@@ -69,7 +80,7 @@ export const updatePostDetails = async (id: number, content: string): Promise<bo
 }
 
 
-export const getPostCommentsById = async (id: number): Promise<IComment[]> => {
+export const getPostCommentsById = async (id: string): Promise<IComment[]> => {
     const post: HydratedDocument<IPost> = await fetchPostById(id);
 
     if (!post) {
@@ -81,24 +92,25 @@ export const getPostCommentsById = async (id: number): Promise<IComment[]> => {
     }
 }
 
-export const addCommentToPostId = async (id: number, comment: IComment): Promise<IComment[]> => {
+export const addCommentToPostId = async (id: string, comment: IComment): Promise<IComment[]> => {
     const post: HydratedDocument<IPost> = await fetchPostById(id);
 
     if (!post) {
         console.error(`didnt find post ${id}`);
     } else {
         console.log(`post ${id} found successfully`);
-        
-        comment.id = post.comments.length + 1;
+    
+        const updatedPost = await Post.findOneAndUpdate(
+            { _id: id },   
+            { $push: { comments: comment } },  
+            { new: true }                      
+        );
 
-        post.comments.push(comment);
-        await post.save();
-
-        return post.comments;
+        return updatedPost.comments;
     }
 }
 
-export const updateCommentInPost = async (postId: number, commentId: number ,newContent: string): Promise<boolean> => {
+export const updateCommentInPost = async (postId: string, commentId: string ,newContent: string): Promise<boolean> => {
     const post: HydratedDocument<IPost> = await fetchPostById(postId);
 
     if (!post) {
@@ -118,24 +130,30 @@ export const updateCommentInPost = async (postId: number, commentId: number ,new
     }
 }
 
-export const deleteCommentInPost = async (postId: number, commentId: number): Promise<boolean> => {
-    const post: HydratedDocument<IPost> = await Post.findOneAndUpdate(
-        {id: postId},
-        {$pull: { comments: { id: commentId } }},
-        { new: true }
-    );
-
-    if (!post) {
-        console.error(`didnt find post ${postId}`);
+export const deleteCommentInPost = async (postId: string, commentId: string): Promise<boolean> => {
+    try {
+        const post: HydratedDocument<IPost> = await Post.findOneAndUpdate(
+            {_id: postId},
+            {$pull: { comments: { _id: commentId } }},
+            { new: true }
+        );
+    
+        if (!post) {
+            console.error(`didnt find post ${postId}`);
+            return false;
+        } else {
+            
+            console.log(`remove comment ${commentId} in post ${postId}`);
+            return true;
+        }
+    } catch (error) {
+        console.error(error);
         return false;
-    } else {
-        
-        console.log(`remove comment ${commentId} in post ${postId}`);
-        return true;
     }
+    
 }
 
-export const getSpecificCommentInPost = async (postId: number, commentId: number): Promise<IComment> => {
+export const getSpecificCommentInPost = async (postId: string, commentId: string): Promise<IComment> => {
     const post: HydratedDocument<IPost> = await fetchPostById(postId);
     
     if (!post) {

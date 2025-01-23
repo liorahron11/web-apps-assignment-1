@@ -1,8 +1,8 @@
 import {IComment} from "./comment.interface";
 
 export interface IPost {
-    id: number;
-    senderId: number;
+    id?: string;
+    senderId: string;
     content: string;
     comments: IComment[]
 }

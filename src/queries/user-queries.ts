@@ -2,6 +2,8 @@ import {IUser} from "../interfaces/user.interface";
 import {DeleteResult, HydratedDocument, UpdateWriteOpResult} from "mongoose";
 import User from "../models/user.model";
 import bcrypt from "bcrypt";
+import {isIdValid} from "../services/query-utils"
+
 
 export class UserQueriesService {
     public getAllUsers = async (): Promise<HydratedDocument<IUser>[]> => {
@@ -44,8 +46,11 @@ export class UserQueriesService {
     }
 
     public getUserById = async (id: string): Promise<HydratedDocument<IUser>> => {
-        const user: HydratedDocument<IUser> = await User.findOne({_id: id});
-
+        let user: HydratedDocument<IUser>;
+        if(isIdValid(id)) {
+            user = await User.findOne({_id: id});    
+        }
+        
         if (!user) {
             console.error(`could not find user`);
         } else {
